@@ -3,14 +3,14 @@
  */
 
 import React, { useEffect } from 'react';
-import { Eye, Mic, Volume2, Scan } from 'lucide-react';
+import { Eye, Mic, Volume2, Scan, History, Settings } from 'lucide-react';
 import tts from '../services/tts';
 
-export default function Home({ onStart }) {
+export default function Home({ onStart, onHistory, onSettings }) {
   // Announce page via TTS on mount (voice-first UX)
   useEffect(() => {
     const timer = setTimeout(() => {
-      tts.speak('Welcome to Braille V. Tap Start Scanning or say scan to begin.');
+      tts.speak('Welcome to Braille V. Say scan to begin, or tap the Start Scanning button.');
     }, 600);
     return () => clearTimeout(timer);
   }, []);
@@ -61,7 +61,7 @@ export default function Home({ onStart }) {
       <button
         id="start-scanning-button"
         onClick={onStart}
-        className="group relative px-8 py-4 bg-brand-500 text-white text-lg font-semibold rounded-2xl shadow-xl shadow-brand-500/30 hover:bg-brand-700 active:scale-[0.97] transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-brand-300 mb-16"
+        className="group relative px-8 py-4 bg-brand-500 text-white text-lg font-semibold rounded-2xl shadow-xl shadow-brand-500/30 hover:bg-brand-700 active:scale-[0.97] transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-brand-300 mb-6"
         aria-label="Start scanning Braille text"
       >
         <span className="flex items-center gap-3">
@@ -69,6 +69,29 @@ export default function Home({ onStart }) {
           Start Scanning
         </span>
       </button>
+
+      {/* Secondary nav links */}
+      <div className="flex items-center gap-6 mb-12">
+        <button
+          id="history-nav-button"
+          onClick={onHistory}
+          className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-brand-500 transition-colors focus:outline-none focus:underline"
+          aria-label="View scan history"
+        >
+          <History className="w-4 h-4" />
+          History
+        </button>
+        <span className="w-px h-4 bg-gray-200" aria-hidden="true" />
+        <button
+          id="settings-nav-button"
+          onClick={onSettings}
+          className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-brand-500 transition-colors focus:outline-none focus:underline"
+          aria-label="Open settings"
+        >
+          <Settings className="w-4 h-4" />
+          Settings
+        </button>
+      </div>
 
       {/* Feature cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-xl w-full">

@@ -15,6 +15,7 @@ from app.services.dot_detection import DotDetector
 from app.services.preprocessing import preprocess_image
 from app.services.recognition import BrailleRecognizer
 from app.services.segmentation import segment_cells
+from app.database import save_scan as db_save_scan
 
 logger = logging.getLogger(__name__)
 
@@ -122,8 +123,23 @@ async def scan_braille(image: UploadFile = File(...)):
             elapsed,
         )
 
+        # Auto-save to SQLite history
+        try:
+            saved = db_save_scan(
+                unicode_braille=result["unicode_braille"],
+                english_text=result["english_text"],
+                num_dots=len(dots),
+                num_cells=len(cells),
+                processing_ms=elapsed,
+            )
+            history_id = saved["id"]
+        except Exception as db_err:
+            logger.warning("History save failed: %s", db_err)
+            history_id = None
+
         return {
             "success": True,
+            "id": history_id,
             "unicode_braille": result["unicode_braille"],
             "english_text": result["english_text"],
             "num_dots": len(dots),

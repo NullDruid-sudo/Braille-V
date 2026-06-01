@@ -6,7 +6,7 @@
 class TTSService {
   constructor() {
     this.synth = window.speechSynthesis || null;
-    this._rate = 0.95;
+    this._rate = 0.5;   // default per spec (0.3-0.8 range)
     this._pitch = 1;
     this._voice = null;
   }

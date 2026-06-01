@@ -8,6 +8,7 @@ export default defineConfig({
     proxy: {
       '/health': 'http://localhost:8000',
       '/scan': 'http://localhost:8000',
+      '/history': 'http://localhost:8000',
     },
   },
 });

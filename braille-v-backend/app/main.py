@@ -8,6 +8,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.endpoints import router
+from app.api.history import router as history_router
+from app.database import init_db
 from app.utils.config import settings
 
 # ── Logging ──────────────────────────────────────────────────────────────────
@@ -33,8 +35,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# ── Initialise database ──────────────────────────────────────────────────────
+init_db()
+logger.info("SQLite database initialised")
+
 # ── Mount routes ─────────────────────────────────────────────────────────────
 app.include_router(router)
+app.include_router(history_router)
 
 logger.info("Braille-V API ready  |  CORS origins: %s", settings.CORS_ORIGINS)
 

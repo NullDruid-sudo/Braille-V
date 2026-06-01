@@ -14,7 +14,6 @@ const api = axios.create({
 
 /**
  * Check if the backend is running.
- * @returns {Promise<{status: string, message: string}>}
  */
 export async function checkHealth() {
   const { data } = await api.get('/health');
@@ -23,17 +22,45 @@ export async function checkHealth() {
 
 /**
  * Send a captured image to the backend for Braille scanning.
- * @param {Blob} imageBlob - The image to scan (from canvas.toBlob).
- * @returns {Promise<Object>} Scan result with unicode_braille, english_text, etc.
+ * @param {Blob} imageBlob
+ * @returns {Promise<Object>} { success, id, unicode_braille, english_text, ... }
  */
 export async function scanImage(imageBlob) {
   const formData = new FormData();
   formData.append('image', imageBlob, 'capture.png');
-
   const { data } = await api.post('/scan', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
   return data;
 }
 
+// ── History API ──────────────────────────────────────────────────────────────
+
+/**
+ * Fetch scan history (newest first, max 50).
+ * @returns {Promise<{ scans: Array, count: number }>}
+ */
+export async function getHistory() {
+  const { data } = await api.get('/history');
+  return data;
+}
+
+/**
+ * Delete a single scan from history by its SQLite row ID.
+ * @param {number} id
+ */
+export async function deleteHistoryItem(id) {
+  const { data } = await api.delete(`/history/${id}`);
+  return data;
+}
+
+/**
+ * Delete all history entries.
+ */
+export async function clearAllHistory() {
+  const { data } = await api.delete('/history');
+  return data;
+}
+
 export default api;
+

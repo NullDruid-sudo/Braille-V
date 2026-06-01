@@ -5,11 +5,14 @@ Centralized settings loaded from environment variables.
 
 import os
 from pathlib import Path
-from dotenv import load_dotenv
+try:
+    from dotenv import load_dotenv
+    _backend_root = Path(__file__).resolve().parent.parent
+    load_dotenv(_backend_root / ".env")
+except ImportError:
+    pass
 
-# Load .env from project root
 _backend_root = Path(__file__).resolve().parent.parent
-load_dotenv(_backend_root / ".env")
 
 
 class Settings:
